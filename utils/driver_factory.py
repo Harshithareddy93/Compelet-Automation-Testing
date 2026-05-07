@@ -1,30 +1,31 @@
+import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 
-def get_driver(env="local"):
+@pytest.fixture(scope="function")
+def driver():
 
     options = Options()
 
-    options.add_argument("--start-maximized")
+    # Headless mode for Jenkins
     options.add_argument("--headless=new")
+
+    # Required for Docker/Jenkins
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    # Local execution
-    if env == "local":
-        driver = webdriver.Chrome(options=options)
+    # Optional stability settings
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
 
-    # Docker / Selenium Grid execution
-    elif env == "docker":
-        driver = webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
-            options=options
-        )
+    # Create Chrome driver
+    driver = webdriver.Chrome(options=options)
 
-    else:
-        raise ValueError("Invalid environment provided")
+    # Maximize window
+    driver.maximize_window()
 
-    driver.implicitly_wait(10)
+    yield driver
 
-    return driver
+    # Close browser after test
+    driver.quit()

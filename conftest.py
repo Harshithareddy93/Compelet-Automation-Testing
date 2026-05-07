@@ -1,11 +1,20 @@
 import pytest
-from utils.driver_factory import get_driver
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 
 @pytest.fixture(scope="function")
 def driver():
 
-    driver = get_driver(env="docker")
+    options = Options()
+
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=options)
+
+    driver.maximize_window()
 
     yield driver
 
