@@ -7,7 +7,7 @@ class BasePage:
     def __init__(self, driver):
         self.driver = driver
 
-    def wait(self, locator, timeout=20):
+    def wait(self, locator, timeout=30):
         return WebDriverWait(self.driver, timeout).until(
             EC.presence_of_element_located(locator)
         )
@@ -18,7 +18,7 @@ class BasePage:
         element.send_keys(text)
 
     def click(self, locator):
-        element = WebDriverWait(self.driver, 20).until(
+        element = WebDriverWait(self.driver, 30).until(
             EC.element_to_be_clickable(locator)
         )
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element)

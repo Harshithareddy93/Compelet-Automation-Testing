@@ -1,8 +1,23 @@
-selenium
-pytest
-pytest-xdist
-pytest-html
-requests
-webdriver-manager
-pyyaml
-allure-pytest
+# Selenium automation
+selenium==4.21.0
+
+# Pytest core
+pytest==8.3.2
+
+# Parallel execution
+pytest-xdist==3.5.0
+
+# HTML reports
+pytest-html==4.1.1
+
+# Allure reporting
+allure-pytest==2.13.5
+
+# HTTP utilities (API testing if needed)
+requests==2.32.3
+
+# Browser driver manager (optional fallback)
+webdriver-manager==4.0.2
+
+# YAML support (if using config files)
+pyyaml==6.0.2

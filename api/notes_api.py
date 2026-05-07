@@ -13,8 +13,7 @@ class NotesAPI:
             headers=self.client.headers
         )
 
-        print("GET NOTES:", res.text)  # DEBUG
-
+      
         return res, time.time() - start
 
     def create_note(self, title, description, category="Home"):
@@ -30,6 +29,6 @@ class NotesAPI:
             headers=self.client.headers
         )
 
-        print("CREATE NOTE:", res.text)
+       
 
         return res, time.time() - start

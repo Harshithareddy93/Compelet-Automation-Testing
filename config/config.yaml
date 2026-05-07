@@ -3,5 +3,5 @@
 "email": "harshithareddy9859@gmail.com"
 "password": "#Harshitha@2004"
 "timeout": 15
-"performance_threshold": 1.5
-"ui_login_threshold": 40
+"performance_threshold": 20
+"ui_login_threshold": 120

@@ -26,7 +26,7 @@ class APIClient:
             }
         )
 
-        print("LOGIN:", res.text)
+      
 
         self.token = res.json()["data"]["token"]
 

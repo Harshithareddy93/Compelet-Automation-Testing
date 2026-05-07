@@ -1,24 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import pytest
 
-@pytest.fixture(scope="function")
-def driver():
+
+def get_driver(env="local"):
+
     options = Options()
-    #Harshitha reddy
-    # Run in headless mode (required for Jenkins/Docker)
-    options.add_argument("--headless")
-    
-    # Fix for Docker/Linux environments
+    options.add_argument("--start-maximized")
+    options.add_argument("--disable-notifications")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    
-    # Optional but recommended (avoids crashes)
-    options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1920,1080")
 
-    driver = webdriver.Chrome(options=options)
+    if env == "grid":
+        driver = webdriver.Remote(
+            command_executor="http://selenium-hub:4444/wd/hub",
+            options=options
+        )
+    else:
+        driver = webdriver.Chrome(options=options)
 
-    yield driver
-
-    driver.quit()
+    return driver
