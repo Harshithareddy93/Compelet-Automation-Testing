@@ -10,7 +10,7 @@ os.environ["WDM_LOG"] = "0"
 BASE_URL = "https://practice.expandtesting.com/notes/app"
 
 
-def get_driver(env="local"):
+def get_driver(env="grid"):
 
     chrome_options = Options()
 
