@@ -1,23 +1,67 @@
-def create_note(self, title, description):
+import time
 
-    WebDriverWait(self.driver, 30).until(
-        EC.element_to_be_clickable(self.ADD_NOTE)
+from selenium.webdriver.support.ui import WebDriverWait
+from config.environment import get_config
+from pages.login_page import LoginPage
+from pages.product_page import ProductPage
+
+
+def test_delete_note_ui(driver):
+    config = get_config()
+
+    driver.get(config["base_url"])
+    WebDriverWait(driver, config.get("timeout", 80)).until(
+        lambda d: d.execute_script("return document.readyState") == "complete"
     )
 
-    self.driver.execute_script(
-        "arguments[0].click();",
-        self.driver.find_element(*self.ADD_NOTE)
+    login = LoginPage(driver)
+    login.login(config["email"], config["password"])
+
+    notes = ProductPage(driver)
+    initial_count = len(notes.get_all_notes())
+    # create temporary note if none exist
+    if initial_count == 0:
+        notes.create_note(
+        "Temporary Delete Note",
+        "Temporary Description"
+        )
+        WebDriverWait(driver, 80).until(
+        lambda d: len(notes.get_all_notes()) > 0
+        )
+        initial_count = len(notes.get_all_notes())
+    assert initial_count > 0
+    # delete first note
+    notes.delete_first_note()
+
+    WebDriverWait(driver, config.get("timeout", 120)).until(
+        lambda d: len(notes.get_all_notes()) == initial_count - 1
     )
 
-    WebDriverWait(self.driver, 20).until(
-        EC.visibility_of_element_located(self.TITLE)
+    assert len(notes.get_all_notes()) == initial_count - 1
+
+
+def test_delete_note_by_title_ui(driver):
+    config = get_config()
+
+    driver.get(config["base_url"])
+    WebDriverWait(driver, config.get("timeout", 30)).until(
+        lambda d: d.execute_script("return document.readyState") == "complete"
     )
 
-    self.type(self.TITLE, title)
-    self.type(self.DESCRIPTION, description)
+    login = LoginPage(driver)
+    login.login(config["email"], config["password"])
 
-    self.click(self.SAVE)
+    notes = ProductPage(driver)
+    target_title = f"Delete by title {int(time.time())}"
+    notes.create_note(target_title, "Temporary note for delete by title")
 
-    WebDriverWait(self.driver, 30).until(
-        lambda d: len(d.find_elements(*self.NOTES)) > 0
+    notes.wait_for_note_presence(target_title, timeout=config.get("timeout", 30))
+
+    notes.delete_note_by_title(target_title)
+
+    notes.wait_for_note_absence(target_title, timeout=config.get("timeout", 30))
+
+    assert not any(
+        note.find_element(*ProductPage.NOTE_TITLE).text.strip() == target_title
+        for note in notes.get_all_notes()
     )
