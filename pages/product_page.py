@@ -59,7 +59,7 @@ class ProductPage(BasePage):
 
         return (
             By.XPATH,
-            f"//div[@data-testid='note-card'][.//div[@data-testid='note-card-title' and normalize-space()=\"{escaped_title}\"]]"
+            f'//div[@data-testid="note-card"][.//div[@data-testid="note-card-title" and normalize-space()="{escaped_title}"]]'
         )
 
     def wait_for_note_presence(self, title, timeout=30):
@@ -138,11 +138,12 @@ class ProductPage(BasePage):
     def delete_first_note(self):
 
         self.delete_note_by_index(0)
+
     def is_note_present(self, title):
 
-    notes = self.get_all_notes()
+        notes = self.get_all_notes()
 
-    return any(
-        title in note.text
-        for note in notes
-    )
+        return any(
+            title in note.text
+            for note in notes
+        )
