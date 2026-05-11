@@ -138,3 +138,11 @@ class ProductPage(BasePage):
     def delete_first_note(self):
 
         self.delete_note_by_index(0)
+    def is_note_present(self, title):
+
+    notes = self.get_all_notes()
+
+    return any(
+        title in note.text
+        for note in notes
+    )
