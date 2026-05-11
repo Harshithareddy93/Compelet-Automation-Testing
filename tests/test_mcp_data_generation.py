@@ -1,10 +1,8 @@
 from selenium.webdriver.support.ui import WebDriverWait
-
 from pages.login_page import LoginPage
 from pages.product_page import ProductPage
-from config.environment import get_config
-
-from MCP.llm_data_generator import LLMDataGenerator
+from utils.config_reader import get_config
+from utils.llm_data_generator import LLMDataGenerator
 
 
 def test_mcp_dynamic_note_creation(driver):
@@ -28,8 +26,6 @@ def test_mcp_dynamic_note_creation(driver):
 
     notes = ProductPage(driver)
 
-    initial_count = len(notes.get_all_notes())
-
     # MCP-generated dynamic data
     title = LLMDataGenerator.random_note_title()
 
@@ -39,11 +35,12 @@ def test_mcp_dynamic_note_creation(driver):
 
     notes.create_note(title, description)
 
-    # wait until note count increases
+    # refresh page to get latest notes
+    driver.refresh()
+
+    # wait until created note appears
     WebDriverWait(driver, 60).until(
-        lambda d: len(notes.get_all_notes()) > initial_count
+        lambda d: notes.is_note_present(title)
     )
 
-    final_count = len(notes.get_all_notes())
-
-    assert final_count > initial_count
+    assert notes.is_note_present(title)
